@@ -1,0 +1,13 @@
+# Use the latest Ubuntu version
+FROM ubuntu:latest
+
+# Set environment variable to avoid interactive prompts during installation
+# ENV DEBIAN_FRONTEND=noninteractive
+
+# Update package lists and install OpenJDK 17
+RUN apt-get update && \
+    apt-get install -y openjdk-17-jdk && \
+    apt-get clean && \  apt-get install -y curl && \ apt-get  install  -y maven  && \
+    rm -rf /var/lib/apt/lists/*
+
+
