@@ -1,11 +1,18 @@
-package org.example.for_doc1.dto;
+package org.example.for_doc1.dtos;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class SendEmailDto {
 
     private String to;
     private String subject;
     private String body;
     private String from;
+//    private Integer otp;
+
 
     public String getTo() {
         return to;

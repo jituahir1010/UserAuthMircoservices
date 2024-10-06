@@ -24,7 +24,7 @@ public class consumer {
 
 
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(consumer.class);
+//    private static final Logger LOGGER = LoggerFactory.getLogger(consumer.class);
 
     private  KafkaTemplate<String, String> kafkaTemplate;
     private ObjectMapper objectMapper;
@@ -37,7 +37,7 @@ public class consumer {
                   this.sendingEmail = sendingEmail;
     }
 
-    Logger log = LoggerFactory.getLogger(consumer.class);
+//    Logger log = LoggerFactory.getLogger(consumer.class);
 
 //    LOGGER.info(String.format("Event message received -> %s", eventMessage));
 //    System.out.println(log)
