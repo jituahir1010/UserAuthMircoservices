@@ -110,6 +110,12 @@ public class UserService {
             if(usr.get().getOtp() == otp){
                 User usr1 = usr.get();
                 Token tokn = tokenService.generateToken(usr1);
+                usr1.setEmailVerified(true);
+                try{
+                    userRepo.save(usr1);
+                }catch(Exception e){
+                    return "Not able to update isvarified value";
+                }
 
                 return  tokn.getValue();
             }

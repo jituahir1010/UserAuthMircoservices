@@ -22,7 +22,7 @@ public class User extends BaseModel{
 
     @ManyToMany
     private List<Role> roles;
-    private boolean isEmailVerified;
+    private boolean isEmailVerified = false;
     private int Otp;
     private ZonedDateTime otpDate;
 }

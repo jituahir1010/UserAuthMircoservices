@@ -75,7 +75,7 @@ public class Controller {
         String password = userSignupRequestdto.getPassword();
         Optional<User> usr = userRepo.findByEmail(email);
         if (usr.isPresent()) {
-            String msg = "Please enter new email this email is already used and varified";
+            String msg = "Please enter new email this email is already used";
 //            System.out.println(msg);
             return ResponseEntity.badRequest().body(msg);
         } else {
@@ -199,7 +199,7 @@ public class Controller {
 
         String to = savedUser.get().getEmail();
         String name = savedUser.get().getName();
-        String bodystring = "Dear " + name + ", \n we have sent your request to the manager for your Admin role Access, Thanks";
+        String bodystring = "Dear " + name + ", \n we have sent your request to the manager for your Admin role Access, \n He/She will check your BackGround and Grant you Access accordingly Thanks";
         SendEmailDto sendEmailDto = new SendEmailDto();
         sendEmailDto.setTo(to);
         sendEmailDto.setSubject("Admin Role Access");
@@ -207,7 +207,7 @@ public class Controller {
 
         SendEmailDto sendEmailDto2 = new SendEmailDto();
         sendEmailDto2.setTo("jituahir998@gmail.com");
-        sendEmailDto2.setSubject("Admin Role Access");
+        sendEmailDto2.setSubject("User want Admin Role Access");
         String bodystring2 = "Hello" + to + "Requested for the admin role thanks";
         sendEmailDto2.setBody(bodystring2);
 
@@ -248,8 +248,48 @@ public class Controller {
 
 
     @GetMapping("/VarifyUser")
-    public String  varifyUser(){
-        return "verifying";
+    public ResponseEntity<String>  varifyUser(@RequestParam String email) throws JsonProcessingException {
+        Optional<User> usr = userRepo.findByEmail(email);
+
+        if(usr.isEmpty()){
+            return ResponseEntity.ok("No user found Kindly Sign up First");
+        }
+        User user = usr.get();
+        if(user.isEmailVerified()){
+            return ResponseEntity.ok("User already verified");
+        }
+        else{
+
+            String to = user.getEmail();
+            Integer Otp = user.getOtp();
+            String names = user.getName();
+            String emailtoken = Base64.getEncoder().encodeToString(to.getBytes());
+            String bodystring = "Dear " + names + ", \nYour data security is top priority to us,\n So we hav two values to verify you \nYour OTP " + Otp  +" \n Clik http://localhost:8085/swagger-ui/index.html#/controller/signOtp \n Steps :- \n 1. Click on Try it Out Button on Right \n 2. Now Enter both details" + "\nEmailToken -> " + emailtoken;
+
+            SendEmailDto sendEmailDto = new SendEmailDto();
+            sendEmailDto.setTo(to);
+            sendEmailDto.setSubject("Email Verification Email");
+            sendEmailDto.setBody(bodystring);
+
+
+            kafkaTemplate.send("quick", objectMapper.writeValueAsString(sendEmailDto)).whenComplete(
+
+                    (result, ex) -> {
+                        if (ex == null) {
+                            System.out.println("Sent message=[" + "message" +
+                                    "] with offset=[" + result.getRecordMetadata().offset() + "]");
+                        } else {
+                            System.out.println("Unable to send message=[" +
+                                    "message" + "] due to : " + ex.getMessage());
+                        }
+                    }
+            );
+
+
+        }
+
+        return  ResponseEntity.ok("We have sent you An Email Please verify Yourself at EndPoint Given in Email");
+
     }
 
 
