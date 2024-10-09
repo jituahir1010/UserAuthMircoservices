@@ -46,7 +46,7 @@ public class consumer {
     @KafkaListener(topics = "quick", groupId = "testi")
     public String listen(String message) throws JsonProcessingException {
 //        SendEmailDto sendEmailDto = new SendEmailDto();
-        Logger log = LoggerFactory.getLogger(message);
+//        Logger log = LoggerFactory.getLogger(message);
         System.out.println("event listned");
         SendEmailDto  sendEmailDto = objectMapper.readValue(message,SendEmailDto.class);
         String to = sendEmailDto.getTo();

@@ -5,8 +5,12 @@ package org.example.for_doc1.services;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.example.for_doc1.Exceptions.NotAdminException;
+import org.example.for_doc1.Exceptions.NotvarifiedException;
+import org.example.for_doc1.Exceptions.UserNotFoundException;
 import org.example.for_doc1.Exceptions.UserNotSaved;
 import org.example.for_doc1.dtos.UserSignupRequestdto;
+import org.example.for_doc1.models.Role;
 import org.example.for_doc1.models.Token;
 import org.example.for_doc1.models.User;
 import org.example.for_doc1.repositories.UserRepo;
@@ -17,7 +21,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,6 +50,32 @@ public class UserService {
         this.cookiess = cookiess;
     }
 
+
+    public List<User> Allusrs(String email) {
+        Optional<User> usr = userRepo.findByEmail(email);
+
+        if(usr.isEmpty()){
+            throw new UserNotFoundException("Please make an account First");
+        }
+        User user = usr.get();
+        if(user.isEmailVerified() == true){
+            List<Role> roles = user.getRoles();
+            if(roles.contains("Admin")){
+                List<User> users = userRepo.findAll();
+                return  users;
+            }
+            else{
+                String msg = "you are Varified but not an admin, request for admin role  http://localhost:8085/swagger-ui/index.html#/controller/RequestForManagerAccess";
+                throw new NotAdminException(msg);
+            }
+
+        }
+        else {
+            String msg = "You are not a varified Yourself Varify yoursel at:  http://localhost:8085/swagger-ui/index.html#/controller/VarifyUser";
+            throw new NotvarifiedException(msg);
+        }
+
+    }
 
 
     public String login(String email, String password) {
