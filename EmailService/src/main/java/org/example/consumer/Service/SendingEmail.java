@@ -25,7 +25,7 @@ public class SendingEmail {
         Authenticator auth = new Authenticator() {
             //override the getPasswordAuthentication method
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("jiturao998@gmail.com", "qwhkihlqkvhgoyoq");
+                return new PasswordAuthentication("jiturao998@gmail.com", "Put_password");
             }
         };
         Session session = Session.getInstance(props, auth);
